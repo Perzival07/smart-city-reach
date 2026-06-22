@@ -12,7 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CitizenRouteImport } from './routes/citizen'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CitizenIndexRouteImport } from './routes/citizen.index'
+import { Route as CitizenScheduleRouteImport } from './routes/citizen.schedule'
+import { Route as CitizenReportsRouteImport } from './routes/citizen.reports'
+import { Route as CitizenNotificationsRouteImport } from './routes/citizen.notifications'
+import { Route as CitizenNewRouteImport } from './routes/citizen.new'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -29,41 +35,119 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CitizenRoute = CitizenRouteImport.update({
+  id: '/citizen',
+  path: '/citizen',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CitizenIndexRoute = CitizenIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CitizenRoute,
+} as any)
+const CitizenScheduleRoute = CitizenScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => CitizenRoute,
+} as any)
+const CitizenReportsRoute = CitizenReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => CitizenRoute,
+} as any)
+const CitizenNotificationsRoute = CitizenNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => CitizenRoute,
+} as any)
+const CitizenNewRoute = CitizenNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => CitizenRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/citizen': typeof CitizenRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/citizen/new': typeof CitizenNewRoute
+  '/citizen/notifications': typeof CitizenNotificationsRoute
+  '/citizen/reports': typeof CitizenReportsRoute
+  '/citizen/schedule': typeof CitizenScheduleRoute
+  '/citizen/': typeof CitizenIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/citizen/new': typeof CitizenNewRoute
+  '/citizen/notifications': typeof CitizenNotificationsRoute
+  '/citizen/reports': typeof CitizenReportsRoute
+  '/citizen/schedule': typeof CitizenScheduleRoute
+  '/citizen': typeof CitizenIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/citizen': typeof CitizenRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/citizen/new': typeof CitizenNewRoute
+  '/citizen/notifications': typeof CitizenNotificationsRoute
+  '/citizen/reports': typeof CitizenReportsRoute
+  '/citizen/schedule': typeof CitizenScheduleRoute
+  '/citizen/': typeof CitizenIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/unauthorized'
+  fullPaths:
+    | '/'
+    | '/citizen'
+    | '/login'
+    | '/signup'
+    | '/unauthorized'
+    | '/citizen/new'
+    | '/citizen/notifications'
+    | '/citizen/reports'
+    | '/citizen/schedule'
+    | '/citizen/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/unauthorized'
-  id: '__root__' | '/' | '/login' | '/signup' | '/unauthorized'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/unauthorized'
+    | '/citizen/new'
+    | '/citizen/notifications'
+    | '/citizen/reports'
+    | '/citizen/schedule'
+    | '/citizen'
+  id:
+    | '__root__'
+    | '/'
+    | '/citizen'
+    | '/login'
+    | '/signup'
+    | '/unauthorized'
+    | '/citizen/new'
+    | '/citizen/notifications'
+    | '/citizen/reports'
+    | '/citizen/schedule'
+    | '/citizen/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CitizenRoute: typeof CitizenRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
@@ -92,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/citizen': {
+      id: '/citizen'
+      path: '/citizen'
+      fullPath: '/citizen'
+      preLoaderRoute: typeof CitizenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -99,11 +190,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/citizen/': {
+      id: '/citizen/'
+      path: '/'
+      fullPath: '/citizen/'
+      preLoaderRoute: typeof CitizenIndexRouteImport
+      parentRoute: typeof CitizenRoute
+    }
+    '/citizen/schedule': {
+      id: '/citizen/schedule'
+      path: '/schedule'
+      fullPath: '/citizen/schedule'
+      preLoaderRoute: typeof CitizenScheduleRouteImport
+      parentRoute: typeof CitizenRoute
+    }
+    '/citizen/reports': {
+      id: '/citizen/reports'
+      path: '/reports'
+      fullPath: '/citizen/reports'
+      preLoaderRoute: typeof CitizenReportsRouteImport
+      parentRoute: typeof CitizenRoute
+    }
+    '/citizen/notifications': {
+      id: '/citizen/notifications'
+      path: '/notifications'
+      fullPath: '/citizen/notifications'
+      preLoaderRoute: typeof CitizenNotificationsRouteImport
+      parentRoute: typeof CitizenRoute
+    }
+    '/citizen/new': {
+      id: '/citizen/new'
+      path: '/new'
+      fullPath: '/citizen/new'
+      preLoaderRoute: typeof CitizenNewRouteImport
+      parentRoute: typeof CitizenRoute
+    }
   }
 }
 
+interface CitizenRouteChildren {
+  CitizenNewRoute: typeof CitizenNewRoute
+  CitizenNotificationsRoute: typeof CitizenNotificationsRoute
+  CitizenReportsRoute: typeof CitizenReportsRoute
+  CitizenScheduleRoute: typeof CitizenScheduleRoute
+  CitizenIndexRoute: typeof CitizenIndexRoute
+}
+
+const CitizenRouteChildren: CitizenRouteChildren = {
+  CitizenNewRoute: CitizenNewRoute,
+  CitizenNotificationsRoute: CitizenNotificationsRoute,
+  CitizenReportsRoute: CitizenReportsRoute,
+  CitizenScheduleRoute: CitizenScheduleRoute,
+  CitizenIndexRoute: CitizenIndexRoute,
+}
+
+const CitizenRouteWithChildren =
+  CitizenRoute._addFileChildren(CitizenRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CitizenRoute: CitizenRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   UnauthorizedRoute: UnauthorizedRoute,
