@@ -12,9 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CollectorRouteImport } from './routes/collector'
 import { Route as CitizenRouteImport } from './routes/citizen'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CollectorIndexRouteImport } from './routes/collector.index'
 import { Route as CitizenIndexRouteImport } from './routes/citizen.index'
+import { Route as CollectorTasksRouteImport } from './routes/collector.tasks'
+import { Route as CollectorScheduleRouteImport } from './routes/collector.schedule'
+import { Route as CollectorMapRouteImport } from './routes/collector.map'
+import { Route as CollectorHistoryRouteImport } from './routes/collector.history'
 import { Route as CitizenScheduleRouteImport } from './routes/citizen.schedule'
 import { Route as CitizenReportsRouteImport } from './routes/citizen.reports'
 import { Route as CitizenNotificationsRouteImport } from './routes/citizen.notifications'
@@ -35,6 +41,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectorRoute = CollectorRouteImport.update({
+  id: '/collector',
+  path: '/collector',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CitizenRoute = CitizenRouteImport.update({
   id: '/citizen',
   path: '/citizen',
@@ -45,10 +56,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectorIndexRoute = CollectorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CollectorRoute,
+} as any)
 const CitizenIndexRoute = CitizenIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => CitizenRoute,
+} as any)
+const CollectorTasksRoute = CollectorTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => CollectorRoute,
+} as any)
+const CollectorScheduleRoute = CollectorScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => CollectorRoute,
+} as any)
+const CollectorMapRoute = CollectorMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => CollectorRoute,
+} as any)
+const CollectorHistoryRoute = CollectorHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => CollectorRoute,
 } as any)
 const CitizenScheduleRoute = CitizenScheduleRouteImport.update({
   id: '/schedule',
@@ -74,6 +110,7 @@ const CitizenNewRoute = CitizenNewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/citizen': typeof CitizenRouteWithChildren
+  '/collector': typeof CollectorRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -81,7 +118,12 @@ export interface FileRoutesByFullPath {
   '/citizen/notifications': typeof CitizenNotificationsRoute
   '/citizen/reports': typeof CitizenReportsRoute
   '/citizen/schedule': typeof CitizenScheduleRoute
+  '/collector/history': typeof CollectorHistoryRoute
+  '/collector/map': typeof CollectorMapRoute
+  '/collector/schedule': typeof CollectorScheduleRoute
+  '/collector/tasks': typeof CollectorTasksRoute
   '/citizen/': typeof CitizenIndexRoute
+  '/collector/': typeof CollectorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,12 +134,18 @@ export interface FileRoutesByTo {
   '/citizen/notifications': typeof CitizenNotificationsRoute
   '/citizen/reports': typeof CitizenReportsRoute
   '/citizen/schedule': typeof CitizenScheduleRoute
+  '/collector/history': typeof CollectorHistoryRoute
+  '/collector/map': typeof CollectorMapRoute
+  '/collector/schedule': typeof CollectorScheduleRoute
+  '/collector/tasks': typeof CollectorTasksRoute
   '/citizen': typeof CitizenIndexRoute
+  '/collector': typeof CollectorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/citizen': typeof CitizenRouteWithChildren
+  '/collector': typeof CollectorRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -105,13 +153,19 @@ export interface FileRoutesById {
   '/citizen/notifications': typeof CitizenNotificationsRoute
   '/citizen/reports': typeof CitizenReportsRoute
   '/citizen/schedule': typeof CitizenScheduleRoute
+  '/collector/history': typeof CollectorHistoryRoute
+  '/collector/map': typeof CollectorMapRoute
+  '/collector/schedule': typeof CollectorScheduleRoute
+  '/collector/tasks': typeof CollectorTasksRoute
   '/citizen/': typeof CitizenIndexRoute
+  '/collector/': typeof CollectorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/citizen'
+    | '/collector'
     | '/login'
     | '/signup'
     | '/unauthorized'
@@ -119,7 +173,12 @@ export interface FileRouteTypes {
     | '/citizen/notifications'
     | '/citizen/reports'
     | '/citizen/schedule'
+    | '/collector/history'
+    | '/collector/map'
+    | '/collector/schedule'
+    | '/collector/tasks'
     | '/citizen/'
+    | '/collector/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -130,11 +189,17 @@ export interface FileRouteTypes {
     | '/citizen/notifications'
     | '/citizen/reports'
     | '/citizen/schedule'
+    | '/collector/history'
+    | '/collector/map'
+    | '/collector/schedule'
+    | '/collector/tasks'
     | '/citizen'
+    | '/collector'
   id:
     | '__root__'
     | '/'
     | '/citizen'
+    | '/collector'
     | '/login'
     | '/signup'
     | '/unauthorized'
@@ -142,12 +207,18 @@ export interface FileRouteTypes {
     | '/citizen/notifications'
     | '/citizen/reports'
     | '/citizen/schedule'
+    | '/collector/history'
+    | '/collector/map'
+    | '/collector/schedule'
+    | '/collector/tasks'
     | '/citizen/'
+    | '/collector/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CitizenRoute: typeof CitizenRouteWithChildren
+  CollectorRoute: typeof CollectorRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
@@ -176,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collector': {
+      id: '/collector'
+      path: '/collector'
+      fullPath: '/collector'
+      preLoaderRoute: typeof CollectorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/citizen': {
       id: '/citizen'
       path: '/citizen'
@@ -190,12 +268,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collector/': {
+      id: '/collector/'
+      path: '/'
+      fullPath: '/collector/'
+      preLoaderRoute: typeof CollectorIndexRouteImport
+      parentRoute: typeof CollectorRoute
+    }
     '/citizen/': {
       id: '/citizen/'
       path: '/'
       fullPath: '/citizen/'
       preLoaderRoute: typeof CitizenIndexRouteImport
       parentRoute: typeof CitizenRoute
+    }
+    '/collector/tasks': {
+      id: '/collector/tasks'
+      path: '/tasks'
+      fullPath: '/collector/tasks'
+      preLoaderRoute: typeof CollectorTasksRouteImport
+      parentRoute: typeof CollectorRoute
+    }
+    '/collector/schedule': {
+      id: '/collector/schedule'
+      path: '/schedule'
+      fullPath: '/collector/schedule'
+      preLoaderRoute: typeof CollectorScheduleRouteImport
+      parentRoute: typeof CollectorRoute
+    }
+    '/collector/map': {
+      id: '/collector/map'
+      path: '/map'
+      fullPath: '/collector/map'
+      preLoaderRoute: typeof CollectorMapRouteImport
+      parentRoute: typeof CollectorRoute
+    }
+    '/collector/history': {
+      id: '/collector/history'
+      path: '/history'
+      fullPath: '/collector/history'
+      preLoaderRoute: typeof CollectorHistoryRouteImport
+      parentRoute: typeof CollectorRoute
     }
     '/citizen/schedule': {
       id: '/citizen/schedule'
@@ -247,9 +360,30 @@ const CitizenRouteChildren: CitizenRouteChildren = {
 const CitizenRouteWithChildren =
   CitizenRoute._addFileChildren(CitizenRouteChildren)
 
+interface CollectorRouteChildren {
+  CollectorHistoryRoute: typeof CollectorHistoryRoute
+  CollectorMapRoute: typeof CollectorMapRoute
+  CollectorScheduleRoute: typeof CollectorScheduleRoute
+  CollectorTasksRoute: typeof CollectorTasksRoute
+  CollectorIndexRoute: typeof CollectorIndexRoute
+}
+
+const CollectorRouteChildren: CollectorRouteChildren = {
+  CollectorHistoryRoute: CollectorHistoryRoute,
+  CollectorMapRoute: CollectorMapRoute,
+  CollectorScheduleRoute: CollectorScheduleRoute,
+  CollectorTasksRoute: CollectorTasksRoute,
+  CollectorIndexRoute: CollectorIndexRoute,
+}
+
+const CollectorRouteWithChildren = CollectorRoute._addFileChildren(
+  CollectorRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CitizenRoute: CitizenRouteWithChildren,
+  CollectorRoute: CollectorRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   UnauthorizedRoute: UnauthorizedRoute,
