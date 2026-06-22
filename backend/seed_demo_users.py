@@ -72,21 +72,21 @@ DEMO_USERS: tuple[DemoUser, ...] = (
 
 
 def _load_app_bindings():
-    """Import the app's User model, password hasher, and session factory.
+    """Import the app's User model, password hasher, token issuer, and session factory.
 
-    Adjust the import paths here if your FastAPI project uses different
-    module names.
+    `create_access_token` should return a signed JWT whose payload includes
+    at least `sub` and `role` claims. Adjust paths to match your project.
     """
     try:
         from app.models.user import User  # type: ignore
-        from app.core.security import hash_password  # type: ignore
+        from app.core.security import hash_password, create_access_token  # type: ignore
         from app.db.session import SessionLocal  # type: ignore
-    except ImportError as exc:  # pragma: no cover - guidance for the dev
+    except ImportError as exc:  # pragma: no cover
         raise SystemExit(
             "Could not import app bindings. Edit _load_app_bindings() in "
             f"seed_demo_users.py to match your project layout. ({exc})"
         )
-    return User, hash_password, SessionLocal
+    return User, hash_password, create_access_token, SessionLocal
 
 
 def _upsert(session, User, hash_password: Callable[[str], str], user: DemoUser) -> str:
@@ -116,24 +116,60 @@ def _upsert(session, User, hash_password: Callable[[str], str], user: DemoUser) 
     return "updated"
 
 
+def _decode_unverified(token: str) -> dict:
+    """Best-effort decode of a JWT payload for display only (no signature check)."""
+    import base64, json
+    try:
+        payload_b64 = token.split(".")[1]
+        payload_b64 += "=" * (-len(payload_b64) % 4)
+        return json.loads(base64.urlsafe_b64decode(payload_b64.encode()))
+    except Exception:
+        return {}
+
+
 def seed(users: Iterable[DemoUser] = DEMO_USERS) -> None:
-    User, hash_password, SessionLocal = _load_app_bindings()
+    User, hash_password, create_access_token, SessionLocal = _load_app_bindings()
 
     with SessionLocal() as session:
-        results: list[tuple[DemoUser, str]] = []
+        results: list[tuple[DemoUser, str, str, dict]] = []
         for u in users:
             action = _upsert(session, User, hash_password, u)
-            results.append((u, action))
+            results.append((u, action, "", {}))
         session.commit()
 
+        # Re-fetch to get persisted ids, then mint a JWT per user.
+        minted: list[tuple[DemoUser, str, str, dict]] = []
+        for u, action, _, _ in results:
+            row = session.query(User).filter(User.email == u.email).one()
+            try:
+                token = create_access_token(
+                    {"sub": str(row.id), "role": row.role, "email": row.email}
+                )
+            except TypeError:
+                # Some implementations take (subject, role=...) instead of a dict.
+                token = create_access_token(str(row.id), role=row.role)  # type: ignore[misc]
+            minted.append((u, action, token, _decode_unverified(token)))
+
     print("\nCleanCity demo accounts ready:")
-    print("-" * 64)
+    print("-" * 72)
     print(f"{'ROLE':<10} {'EMAIL':<36} {'PASSWORD':<16} STATUS")
-    print("-" * 64)
-    for u, action in results:
+    print("-" * 72)
+    for u, action, _, _ in minted:
         print(f"{u.role:<10} {u.email:<36} {DEFAULT_PASSWORD:<16} {action}")
-    print("-" * 64)
-    print("Sign in at http://localhost:3000/login with any of the above.\n")
+    print("-" * 72)
+
+    print("\nDemo JWT tokens (paste into Authorization: Bearer <token>):")
+    for u, _, token, claims in minted:
+        print("\n" + "=" * 72)
+        print(f"{u.role.upper()}  —  {u.email}")
+        print(f"  expected route: /{u.role}")
+        if claims:
+            shown = {k: claims.get(k) for k in ("sub", "role", "email", "exp") if k in claims}
+            print(f"  claims: {shown}")
+        print(f"  token: {token}")
+    print("=" * 72)
+    print("\nSign in at http://localhost:3000/login or test directly with curl:")
+    print("  curl -H 'Authorization: Bearer <token>' http://localhost:8000/users/me\n")
 
 
 if __name__ == "__main__":
