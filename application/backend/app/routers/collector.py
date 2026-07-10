@@ -58,13 +58,14 @@ async def update_task_status(
     if update.status not in allowed_statuses:
         raise HTTPException(status_code=400, detail="Invalid status transition")
 
+    completed_at = None
     # Auto-set completed_at if resolved
     if update.status == "resolved":
-        update.completed_at = datetime.utcnow()
+        completed_at = datetime.utcnow()
         crud.update_worker_stats(db, current_user.id)
 
     # Update the report
-    report_update = schemas.ReportUpdate(status=update.status, completed_at=update.completed_at if update.status == "resolved" else None)
+    report_update = schemas.ReportUpdate(status=update.status, completed_at=completed_at)
     updated = crud.update_report(db, task_id, report_update)
     
     await manager.broadcast(json.dumps({
