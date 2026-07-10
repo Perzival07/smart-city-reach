@@ -111,8 +111,8 @@ function TaskMap() {
     <>
       <PageHeader title="Task map" subtitle="Plotted by location for your route planning." />
 
-      {loading ? (
-        <Skeleton className="h-[520px] w-full" />
+       {loading ? (
+        <Skeleton className="h-[350px] sm:h-[450px] lg:h-[520px] w-full" />
       ) : error ? (
         <EmptyState title="Couldn't load map" body={error} />
       ) : mapped.length === 0 ? (
@@ -124,7 +124,7 @@ function TaskMap() {
       ) : (
         <div className="grid lg:grid-cols-3 gap-4">
           {/* Leaflet Map Card */}
-          <Card className="lg:col-span-2 relative overflow-hidden h-[520px]">
+          <Card className="lg:col-span-2 relative overflow-hidden h-[350px] sm:h-[450px] lg:h-[520px]">
             <div ref={mapRef} className="absolute inset-0 w-full h-full z-0" />
             <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur border border-border rounded-lg px-3 py-2 text-xs font-mono z-[1000] pointer-events-none">
               {mapped.length} task{mapped.length === 1 ? "" : "s"} plotted
@@ -132,7 +132,7 @@ function TaskMap() {
           </Card>
 
           {/* Sidebar list */}
-          <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-[300px] lg:max-h-[520px] overflow-y-auto pr-1">
             {selected ? (
               <Card className="p-4 border-forest-300 bg-forest-50/40">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">

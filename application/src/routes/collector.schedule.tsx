@@ -67,24 +67,26 @@ function CollectorSchedule() {
       ) : (
         <div className="space-y-2">
           {stops.map((t, i) => (
-            <Card key={t.id} className="p-4 flex items-start gap-4">
-              <div className="w-9 h-9 rounded-full bg-forest-100 text-forest-800 font-display font-bold grid place-items-center shrink-0">
-                {i + 1}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="font-semibold text-foreground">
-                    {t.category || t.tags?.[0] || "Stop"}
-                  </div>
-                  <StatusBadge status={t.priority || "medium"} />
-                  <StatusBadge status={t.status} />
+            <Card key={t.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-4 flex-1 min-w-0">
+                <div className="w-9 h-9 rounded-full bg-forest-100 text-forest-800 font-display font-bold grid place-items-center shrink-0">
+                  {i + 1}
                 </div>
-                <div className="text-sm text-muted-foreground mt-0.5 truncate">
-                  {t.address || "Address unavailable"}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="font-semibold text-foreground">
+                      {t.category || t.tags?.[0] || "Stop"}
+                    </div>
+                    <StatusBadge status={t.priority || "medium"} />
+                    <StatusBadge status={t.status} />
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-0.5 truncate">
+                    {t.address || "Address unavailable"}
+                  </div>
                 </div>
               </div>
               {t.latitude != null && t.longitude != null ? (
-                <Button size="sm" variant="secondary" onClick={() => navigateTo(t)}>
+                <Button size="sm" variant="secondary" onClick={() => navigateTo(t)} className="w-full sm:w-auto self-stretch sm:self-auto">
                   <Navigation className="w-3.5 h-3.5" /> Navigate
                 </Button>
               ) : null}

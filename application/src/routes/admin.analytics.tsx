@@ -182,7 +182,7 @@ function DonutList({ items }: { items: { label: string; count: number }[] }) {
   const gradient = `conic-gradient(${stops.join(", ")})`;
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-4">
       <div
         className="w-28 h-28 rounded-full shrink-0 relative"
         style={{ background: gradient }}
@@ -194,7 +194,7 @@ function DonutList({ items }: { items: { label: string; count: number }[] }) {
           </div>
         </div>
       </div>
-      <ul className="flex-1 space-y-1.5 min-w-0">
+      <ul className="flex-1 w-full sm:w-auto space-y-1.5 min-w-0">
         {items.slice(0, 6).map((it, i) => (
           <li key={i} className="flex items-center gap-2 text-sm">
             <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: palette[i % palette.length] }} />
